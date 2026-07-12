@@ -1,0 +1,5 @@
+services:
+  simpleHttpserver:
+    build:
+      context: .
+      dockerfile: Dockerfile
