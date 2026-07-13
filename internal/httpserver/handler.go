@@ -6,5 +6,7 @@ import (
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "success\n")
+	msg := GettingDataOfDB()
+
+	fmt.Fprintf(w, msg)
 }

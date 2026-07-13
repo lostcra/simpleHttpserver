@@ -1,5 +1,25 @@
+# creating secrets for application
+secrets:
+  pg_password:
+    file: ./secrets/pg_password.txt
+
 services:
-  simpleHttpserver:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  simpleHttpserver: # first container is creating web service
+    build: .
+    depends_on: # initialized first
+      db: # waiting for database to start
+        condition: service_healthy
+    ports: # first:second (first is hostport: local on your computer; second is used within docker network between containers)
+      - "8080:80"
+
+  db: # second container is database (postgres:17 image from docker hub version 17)
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD_FILE: /run/secrets/pg_password # text file with secret password for root user posgres
+    secrets: # available secrets for this container
+      - pg_password
+    healthcheck: # checking whether db running or not
+      test: ["CMD_SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
