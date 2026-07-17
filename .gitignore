@@ -1,3 +1,6 @@
 # very important secrets (passwords, tokens and so on)
 secrets/*.txt
 !secrets/.gitkeep
+
+# environment variables, sutch as: host, port and so on
+.env

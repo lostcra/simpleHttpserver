@@ -13,7 +13,7 @@ services:
       - "8080:80"
 
   db: # second container is database (postgres:17 image from docker hub version 17)
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/pg_password # text file with secret password for root user posgres
     secrets: # available secrets for this container
