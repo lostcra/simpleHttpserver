@@ -1,27 +1,33 @@
 package infra
 
 import (
-	"errors"
 	"os"
-	"strings"
+
+	"github.com/lostcra/simpleHttpserver/internal/secret"
 )
 
-func readPassword(path string) (string, error) {
-	password, err := os.ReadFile(path)
-	if err != nil {
-		return "", err
-	}
-	return strings.TrimSpace(string(password)), nil
+type PGConfig struct {
+	UserName string
+	Password string
+	Host     string
+	Port     string
+	DBName   string
 }
+
+func loadPGConfig() {}
 
 func getDBPassword() (string, error) {
 	path := os.Getenv("POSTGRES_PASSWORD_FILE")
-	if path == "" {
-		return "", errors.New("POSTGRES_PASSWORD_FILE isn't passed")
-	}
-	password, err := readPassword(path)
+
+	fr, err := secret.New(path)
 	if err != nil {
 		return "", err
 	}
-	return password, nil
+
+	pwd, err := fr.ReadFile()
+	if err != nil {
+		return "", err
+	}
+
+	return pwd, nil
 }
