@@ -1,6 +1,6 @@
 package httpserver
 
-func GettingDataOfDB() string {
-	msg := "hello world"
+func GetDataFromDB() string {
+	msg := "hello, world!"
 	return msg
 }
