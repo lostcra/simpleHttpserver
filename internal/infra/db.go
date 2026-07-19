@@ -1,33 +1,34 @@
 package infra
 
 import (
-	"os"
+	"context"
+	"fmt"
 
-	"github.com/lostcra/simpleHttpserver/internal/secret"
+	"github.com/jackc/pgx"
 )
 
-type PGConfig struct {
-	UserName string
-	Password string
-	Host     string
-	Port     string
-	DBName   string
+func dsnString() (string, error) {
+	conf, err := LoadEnvConfig()
+	if err != nil {
+		return "", err
+	}
+
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
+		conf.UserName, conf.Password, conf.Host, conf.Port, conf.DBName)
+
+	return dsn, nil
 }
 
-func loadPGConfig() {}
-
-func getDBPassword() (string, error) {
-	path := os.Getenv("POSTGRES_PASSWORD_FILE")
-
-	fr, err := secret.New(path)
+func ConnectToDB() (*pgx.Conn, error) {
+	dsn, err := dsnString()
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	pwd, err := fr.ReadFile()
+	conn, err := pgx.Connect(context.Background(), dsn)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return pwd, nil
+	return conn, nil
 }
